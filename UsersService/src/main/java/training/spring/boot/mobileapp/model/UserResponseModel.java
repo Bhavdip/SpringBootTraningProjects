@@ -1,23 +1,12 @@
-package training.spring.boot.mobileapp.model.shared;
+package training.spring.boot.mobileapp.model;
 
-import java.io.Serializable;
 import java.util.List;
 
-import training.spring.boot.mobileapp.model.AlbumReponseModel;
-
-public class UserDto implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7789257769565110986L;
-	
+public class UserResponseModel {
 	private String userId;
 	private String firstName;
 	private String lastName;
 	private String email;
-	private String password;
-	private String encryptedPassword;
 	private List<AlbumReponseModel> albums;
 	
 	public String getUserId() {
@@ -44,23 +33,11 @@ public class UserDto implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getEncryptedPassword() {
-		return encryptedPassword;
-	}
-	public void setEncryptedPassword(String encryptedPassword) {
-		this.encryptedPassword = encryptedPassword;
-	}
 	public List<AlbumReponseModel> getAlbums() {
 		return albums;
 	}
 	public void setAlbums(List<AlbumReponseModel> albums) {
 		this.albums = albums;
 	}
-	
+
 }

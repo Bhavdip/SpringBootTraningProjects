@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import training.spring.boot.mobileapp.api.users.service.impl.UserServiceImp;
 import training.spring.boot.mobileapp.model.CreateUserReponseModel;
 import training.spring.boot.mobileapp.model.CreateUserRequestModel;
+import training.spring.boot.mobileapp.model.UserResponseModel;
 import training.spring.boot.mobileapp.model.shared.UserDto;
 
 @RestController
@@ -47,5 +49,15 @@ public class UserController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
 	}
+
+
+	@GetMapping(value = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<UserResponseModel> getUser(@PathVariable String userId) {
+		UserDto userDto = mUserServiceImp.getUserByUserId(userId);
+		//Map to Response Entity 
+		UserResponseModel userResponseModel = new ModelMapper().map(userDto, UserResponseModel.class);
+		return ResponseEntity.status(HttpStatus.OK).body(userResponseModel);
+	}
+	
 
 }

@@ -5,17 +5,26 @@ import java.util.ArrayList;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import training.spring.boot.mobileapp.api.users.service.UserService;
 import training.spring.boot.mobileapp.data.UserEntity;
 import training.spring.boot.mobileapp.data.UserRepository;
+import training.spring.boot.mobileapp.model.AlbumReponseModel;
 import training.spring.boot.mobileapp.model.shared.UserDto;
 import training.spring.boot.mobileapp.util.Utilities;
+import java.util.List;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -29,14 +38,28 @@ public class UserServiceImp implements UserService {
 	
 	private BCryptPasswordEncoder mBCryptPasswordEncoder;
 	
+	private RestTemplate mRestTemplate;
+	
+	private Environment mEnvironment;
+	
+
 	public UserServiceImp() {
 	}
 
 	@Autowired
-	public UserServiceImp(Utilities utilities, UserRepository repository, BCryptPasswordEncoder cryptPasswordEncoder) {
+	public UserServiceImp(
+			Utilities utilities, 
+			UserRepository repository, 
+			BCryptPasswordEncoder cryptPasswordEncoder,
+			RestTemplate restTemplate,
+			Environment environment) {
+		
 		mUtilities = utilities;
 		mUserRepository = repository;
 		mBCryptPasswordEncoder = cryptPasswordEncoder;
+		mRestTemplate = restTemplate;
+		mEnvironment = environment;
+		
 	}
 	
 	@Override
@@ -61,7 +84,7 @@ public class UserServiceImp implements UserService {
 		
 		return nwUserDetails;
 	}
-
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity userEntity = mUserRepository.findByEmail(username);
@@ -77,4 +100,24 @@ public class UserServiceImp implements UserService {
 		return userDetails;
 	}
 
+	@Override
+	public UserDto getUserByUserId(String userId) {
+		UserEntity userEntity = mUserRepository.findByUserId(userId);
+		if(userEntity == null) throw new UsernameNotFoundException(userId);
+		UserDto userDetails = new ModelMapper().map(userEntity, UserDto.class);
+
+		//Prepare Albums-WS
+		String  albumsURL = String.format(mEnvironment.getProperty("albums.users.url"), userDetails.getUserId());
+		
+		//Communicate with Albums-WS
+		ResponseEntity<List<AlbumReponseModel>> albumeResponseList  =  mRestTemplate.exchange(albumsURL, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumReponseModel>>() {});
+		
+		//Response of Albums-WS 
+		List<AlbumReponseModel> resultAlbumList = albumeResponseList.getBody();
+		
+		//Save result album to UserDto PoJo
+		userDetails.setAlbums(resultAlbumList);
+		
+		return userDetails;
+	}
 }
