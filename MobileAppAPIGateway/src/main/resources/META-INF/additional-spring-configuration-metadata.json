@@ -1,0 +1,52 @@
+{"properties": [
+  {
+    "name": "api.url.login.path",
+    "type": "java.lang.String",
+    "description": "A description for 'api.url.login.path'"
+  },
+  {
+    "name": "api.url.registration.path",
+    "type": "java.lang.String",
+    "description": "A description for 'api.url.registration.path'"
+  },
+  {
+    "name": "api.url.h2console.path",
+    "type": "java.lang.String",
+    "description": "A description for 'api.url.h2console.path'"
+  },
+  {
+    "name": "authorization.tolken.header.name",
+    "type": "java.lang.String",
+    "description": "A description for 'authorization.tolken.header.name'"
+  },
+  {
+    "name": "authorization.token.header.name",
+    "type": "java.lang.String",
+    "description": "A description for 'authorization.token.header.name'"
+  },
+  {
+    "name": "authorization.token.header.prefix",
+    "type": "java.lang.String",
+    "description": "A description for 'authorization.token.header.prefix'"
+  },
+  {
+    "name": "token.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'token.secret'"
+  },
+  {
+    "name": "spring.config.import",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.config.import'"
+  },
+  {
+    "name": "api.url.actuator.path",
+    "type": "java.lang.String",
+    "description": "A description for 'api.url.actuator.path'"
+  },
+  {
+    "name": "api.url.users.actuator.path",
+    "type": "java.lang.String",
+    "description": "A description for 'api.url.users.actuator.path'"
+  }
+]}
